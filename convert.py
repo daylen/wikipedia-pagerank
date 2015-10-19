@@ -1,4 +1,5 @@
 # coding=utf8
+import array
 
 """
 Convert Wikipedia SQL dumps into more usable format.
@@ -53,7 +54,8 @@ def restore_converted_page_dump():
 
 title_id_dict = restore_converted_page_dump()
 
-pagelinks_list = []
+from_list = array.array('L')
+to_list = array.array('L')
 
 print 'Reading page links dump...'
 
@@ -69,14 +71,16 @@ with open(pagelinks_dump_filename) as f:
 				from_id = int(pagelink_metadata[0])
 				try:
 					to_id = title_id_dict[pagelink_metadata[2]]
-					pagelinks_list.append((from_id, to_id))
+					from_list.append(from_id)
+					to_list.append(to_id)
 				except KeyError:
 					pass
-		print len(pagelinks_list), 'links'
+		print len(from_list), 'links'
 
 print 'Writing to file...'
 
 converted_file = open('./pagelinks_list.txt', 'w+')
-print >> converted_file, pagelinks_list
+for i in xrange(len(from_list)):
+	converted_file.write(str(from_list[i]) + ' ' + str(to_list[i]) + '\n')
 converted_file.close()
 
