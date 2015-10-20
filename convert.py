@@ -1,5 +1,6 @@
 # coding=utf8
 import array
+from sets import Set
 
 """
 Convert Wikipedia SQL dumps into more usable format.
@@ -53,6 +54,7 @@ def restore_converted_page_dump():
 	return title_id_dict
 
 title_id_dict = restore_converted_page_dump()
+valid_ids = Set(title_id_dict.values())
 
 from_list = array.array('L')
 to_list = array.array('L')
@@ -69,6 +71,8 @@ with open(pagelinks_dump_filename) as f:
 			pagelink_metadata = pagelink_row.split(",")
 			if pagelink_metadata[1] == "0": # 0 is the article namespace
 				from_id = int(pagelink_metadata[0])
+				if from_id not in valid_ids:
+					continue
 				try:
 					to_id = title_id_dict[pagelink_metadata[2]]
 					from_list.append(from_id)
