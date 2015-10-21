@@ -4,7 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Arrays;
+import java.io.PrintWriter;
 
 enum RleState {
 	TO_PAGE_ID, RUN_LENGTH, FROM_PAGE_ID
@@ -15,11 +15,14 @@ public class PageRank {
 	private static final double DAMPING_FACTOR = 0.85;
 	private static final int MAX_PAGE_ID = 48043687; // wc -l title_id_dict.txt
 	private static final String BINARY_FILE_NAME = "/Users/daylenyang/Desktop/wikipedia-pagerank/data/rle.binary";
+	private static final String OUTPUT_FILE_NAME = "/Users/daylenyang/Desktop/wikipedia-pagerank/data/ranking.txt";
+	private static final int ACCEPTABLE_DELTA = 500;
 
 	private boolean[] validPages = new boolean[MAX_PAGE_ID + 1];
 	private int numValidPages = 0;
 	private int[] outgoingDegree = new int[MAX_PAGE_ID + 1];
 
+	private double[] prevPageRanks = new double[MAX_PAGE_ID + 1];
 	private double[] currPageRanks = new double[MAX_PAGE_ID + 1];
 	private double[] nextPageRanks = new double[MAX_PAGE_ID + 1];
 
@@ -101,7 +104,10 @@ public class PageRank {
 		while (true) {
 			System.out.println("\nStarting PageRank iteration " + prIteration);
 			long start = System.currentTimeMillis();
-			
+
+			// Clone to previous to calculate delta later
+			prevPageRanks = currPageRanks.clone();
+
 			// Divide all PageRanks by outgoing degree
 
 			/*
@@ -111,7 +117,7 @@ public class PageRank {
 			 * among all other pages.
 			 */
 			double sinkNodePR = 0;
-			
+
 			for (int i = 0; i < currPageRanks.length; i++) {
 				if (validPages[i]) {
 					if (outgoingDegree[i] > 0)
@@ -121,10 +127,8 @@ public class PageRank {
 				}
 			}
 			sinkNodePR /= numValidPages;
-			
-			System.out.println("Sum of PageRank of sink nodes: " + sinkNodePR);
 
-			// Accumulate the summation
+			// Accumulate the summation in next
 			RleState state = RleState.TO_PAGE_ID;
 			int currPageId = -1;
 			int runLength = -1;
@@ -157,79 +161,37 @@ public class PageRank {
 				}
 			}
 
+			// Recycle generation
+			currPageRanks = nextPageRanks;
+			nextPageRanks = new double[currPageRanks.length];
+
 			// Compute change statistics
 			double delta = 0;
-			for (int i = 0; i < nextPageRanks.length; i++) {
-				delta += Math.abs(nextPageRanks[i] - currPageRanks[i]);
+			for (int i = 0; i < currPageRanks.length; i++) {
+				delta += Math.abs(currPageRanks[i] - prevPageRanks[i]);
 			}
 
-			// Recycle generation
-			currPageRanks = nextPageRanks.clone();
-			nextPageRanks = new double[currPageRanks.length];
+			prIteration++;
 
 			System.out.println("Finished iteration in " + (System.currentTimeMillis() - start) / 1000.0 + " sec");
 			System.out.println("DELTA: " + delta);
 
-			System.out.println("Top page IDs:");
-			System.out.println(Arrays.toString(topIndices(currPageRanks, 20)));
-
-			prIteration++;
-			
-			sanityCheck();
-		}
-	}
-	
-	public void sanityCheck() {
-		for (int i = 0; i < validPages.length; i++) {
-			if (validPages[i] == false) {
-				try {
-					assert(outgoingDegree[i] == 0);
-					assert(currPageRanks[i] < 0.001);
-					assert(nextPageRanks[i] < 0.001);
-				} catch (AssertionError e) {
-					System.out.println("Whoa! Sanity check failed at index " + i);
-					System.out.println("Outgoing degree " + outgoingDegree[i]);
-					System.out.println("PageRanks " + currPageRanks[i] + " " + nextPageRanks[i]);
-					throw e;
-				}
-			} else {
-//				assert(currPageRanks[i] <= 1);
+			if (delta < ACCEPTABLE_DELTA) {
+				System.out.println("DELTA threshold crossed");
+				break;
 			}
 		}
 	}
 
-	public static int[] topIndices(double[] pageRanks, int quantity) {
-		double[] sorted = pageRanks.clone();
-		Arrays.sort(sorted);
-		System.out.println("Highest PageRank values:");
-		printSnippet(sorted, true);
-		int[] topIndices = new int[quantity];
-
-		for (int i = 0; i < quantity; i++) {
-			int idx = 0;
-			for (int j = 0; j < pageRanks.length; j++) {
-				if (pageRanks[j] == sorted[sorted.length - i - 1]) {
-					idx = j;
-					break;
-				}
-			}
-			topIndices[i] = idx;
+	public void writePageRanks() throws IOException {
+		System.out.println("Saving");
+		PrintWriter writer = new PrintWriter(OUTPUT_FILE_NAME, "UTF-8");
+		for (int i = 0; i < currPageRanks.length; i++) {
+			if (validPages[i])
+				writer.write(i + " " + currPageRanks[i] + "\n");
 		}
-
-		return topIndices;
-	}
-	
-	public static void printSnippet(double[] arr, boolean reversed) {
-		if (reversed) {
-			for (int i = arr.length - 1; i > arr.length - 1 - 20; i--) {
-				System.out.print(arr[i] + " ");
-			}
-		} else {
-			for (int i = 0; i < 20; i++) {
-				System.out.print(arr[i] + " ");
-			}
-		}
-		System.out.println();
+		writer.close();
+		System.out.println("Saved to disk");
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -241,6 +203,7 @@ public class PageRank {
 		PageRank pr = new PageRank();
 		pr.populateHelperArrays(rle);
 		pr.runPageRank(rle);
+		pr.writePageRanks();
 	}
 
 }
