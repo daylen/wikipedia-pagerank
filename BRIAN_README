@@ -1,0 +1,4 @@
+To run my version, install scipy, numpy, and h5py. 
+
+To run pagerank_brian.py, you will also need to download the newpagelinks_list.h5 and newid2title.txt from: https://www.dropbox.com/sh/jognpchr03zdog3/AABLIbLmQvdoSdXDmmHPZbM3a?dl=0
+To run data.py, you will need Daylen's title_id_dict.txt and my pagelinks_list.h5, found at: https://www.dropbox.com/sh/jognpchr03zdog3/AABLIbLmQvdoSdXDmmHPZbM3a?dl=0
