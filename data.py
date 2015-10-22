@@ -1,5 +1,6 @@
 import numpy as np
 import h5py
+import pickle
 # from numba import jit
 
 kvs = []
@@ -16,16 +17,19 @@ del kvs
 count = 0
 id2newid = {}
 for key in keys:
-  if key in id2newid:
-    print('dup found!')
   id2newid[key] = count
   count += 1
 
-with open('newid2title.txt', 'w') as f:
-  for key, value in zip(range(len(values)), values):
-    f.write('%i %s\n' % (key, value) )
+newid2title = {}
+# with open('newid2title.txt', 'w') as f:
+for key, value in zip(range(len(values)), values):
+  newid2title[key] = value
+  # f.write('%i %s\n' % (key, value) )
 del keys
 del values
+
+with open('newid2title.pickle', 'wb') as f:
+  pickle.dump(newid2title, f, protocol=pickle.HIGHEST_PROTOCOL)
 
 with open('id2newid.txt', 'w') as f:
   for id, newid in id2newid.items():

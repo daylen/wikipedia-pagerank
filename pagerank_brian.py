@@ -4,10 +4,10 @@ from scipy.io import savemat
 from scipy.sparse import csr_matrix, csc_matrix, lil_matrix, coo_matrix
 from signal import signal, SIGINT, SIG_DFL
 from sklearn.preprocessing import normalize
+import pickle
 
 src = h5py.File('newpagelinks_list.h5', 'r')
 links = src['pagelinks_list']
-teleport = 0.2
 
 # m is of form matrix[from_idx][to_idx] = 1
 # build matrix from links
@@ -21,14 +21,10 @@ normalize(M, norm='l1', copy=False)
 # we will find right eigenvalue, so convert matrix to form matrix[to_idx][from_idx], transpose implicitly gives csc_matrix, so covert back to csr
 M = M.transpose().tocsr()
 
-id2title = {}
-with open('newid2title.txt','r') as f:
-  for line in f:
-    c = line.split(' ')
-    id = int(c[0].strip())
-    title = c[1].strip()
-    id2title[id] = title
+with open('newid2title.pickle', 'rb') as f:
+  id2title = pickle.load(f)
 
+teleport = 0.3
 def run():
   random_arrival = teleport * np.ones(n, dtype=np.float64) / n
 
