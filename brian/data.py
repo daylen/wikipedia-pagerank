@@ -1,10 +1,11 @@
 import numpy as np
 import h5py
 import pickle
-# from numba import jit
+
+num_ids = 12000926
 
 kvs = []
-with open('title_id_dict.txt','r') as f:
+with open('../title_id_dict.txt','r') as f:
   for line in f:
     c = line.split(' ')
     id = int(c[1].strip())
@@ -21,10 +22,8 @@ for key in keys:
   count += 1
 
 newid2title = {}
-# with open('newid2title.txt', 'w') as f:
 for key, value in zip(range(len(values)), values):
   newid2title[key] = value
-  # f.write('%i %s\n' % (key, value) )
 del keys
 del values
 
@@ -35,15 +34,15 @@ with open('id2newid.txt', 'w') as f:
   for id, newid in id2newid.items():
     f.write('%i %i\n' % (id, newid))
 
-# @jit
+num_links = 374556579
 def update_links_ids(id2newid):
-  src = h5py.File('pagelinks_list.h5', 'r')
-  lst = src['pagelinks_list'][()]
-  src.close()
-  for i in range(len(lst)):
-    lst[i,0] = id2newid[lst[i,0]]
-    lst[i,1] = id2newid[lst[i,1]]
-  dst = h5py.File('newpagelinks_list.h5', 'w')
-  dst.create_dataset('pagelinks_list', data=lst, compression='gzip')
-  dst.close()
+  with open('../pagelinks_list.txt', 'r') as f:
+    lst = np.empty((num_links, 2), dtype=np.int32)
+    for i, line in enumerate(f):
+      c = line.split(' ')
+      lst[i,0] = id2newid[np.int(c[0])]
+      lst[i,1] = id2newid[np.int(c[1])]
+    dst = h5py.File('newpagelinks_list.h5', 'w')
+    dst.create_dataset('pagelinks_list', data=lst, compression='gzip')
+    dst.close()
 update_links_ids(id2newid)

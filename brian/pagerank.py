@@ -11,7 +11,7 @@ links = src['pagelinks_list']
 
 # m is of form matrix[from_idx][to_idx] = 1
 # build matrix from links
-num_ids = 11578100
+num_ids = 12000926
 M = coo_matrix( (np.ones(len(links)), (links[:, 0], links[:, 1]) ), shape=(num_ids, num_ids), dtype=np.float64)
 n = M.shape[0]
 
@@ -24,7 +24,7 @@ M = M.transpose().tocsr()
 with open('newid2title.pickle', 'rb') as f:
   id2title = pickle.load(f)
 
-teleport = 0.3
+teleport = 0.2
 def run():
   random_arrival = teleport * np.ones(n, dtype=np.float64) / n
 
@@ -44,7 +44,7 @@ def run():
   signal(SIGINT, sigint_handler)
 
   iteration = 0
-  while abs(np.sum(v - oldv)) > 0.0000000001 and not sigint_called:
+  while abs(np.sum(v - oldv)) > 0.00000000001 and not sigint_called:
     oldv = v
     v = iterate(v)
     iteration += 1
