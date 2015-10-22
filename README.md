@@ -1,2 +1,0 @@
-# wikipedia-pagerank
-Big Data

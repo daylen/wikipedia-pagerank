@@ -16,7 +16,7 @@ public class PageRank {
 	private static final int MAX_PAGE_ID = 48043687; // wc -l title_id_dict.txt
 	private static final String BINARY_FILE_NAME = "/Users/daylenyang/Desktop/wikipedia-pagerank/data/rle.binary";
 	private static final String OUTPUT_FILE_NAME = "/Users/daylenyang/Desktop/wikipedia-pagerank/data/ranking.txt";
-	private static final int ACCEPTABLE_DELTA = 500;
+	private static final int ACCEPTABLE_DELTA = 1;
 
 	private boolean[] validPages = new boolean[MAX_PAGE_ID + 1];
 	private int numValidPages = 0;

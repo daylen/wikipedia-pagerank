@@ -10,6 +10,7 @@ page_dump_filename = 'data/enwiki-20151002-page.sql'
 pagelinks_dump_filename = 'data/enwiki-20151002-pagelinks.sql'
 
 converted_page_dump_filename = 'data/title_id_dict.txt'
+converted_pagelinks_dump_filename = 'data/pagelinks_list.txt'
 
 def convert_page_dump():
 	title_id_dict = {}
@@ -59,7 +60,7 @@ def restore_converted_page_dump():
 	
 	return title_id_dict
 
-title_id_dict = restore_converted_page_dump()
+title_id_dict = convert_page_dump()
 valid_ids = Set(title_id_dict.values())
 
 from_list = array.array('L')
@@ -95,7 +96,7 @@ with open(pagelinks_dump_filename) as f:
 
 print 'Writing to file...'
 
-converted_file = open('./pagelinks_list.txt', 'w+')
+converted_file = open(converted_pagelinks_dump_filename, 'w+')
 for i in xrange(len(from_list)):
 	converted_file.write(str(from_list[i]) + ' ' + str(to_list[i]) + '\n')
 converted_file.close()
