@@ -1,3 +1,5 @@
+The topic sensitive code is a different codebase.
+
 To run code in this folder, you will need python3.4, with scipy, numpy, and h5py installed.
 
 To run pagerank.py, you will also need to download the newpagelinks_list.h5 and newid2title.pickle from: https://www.dropbox.com/sh/jognpchr03zdog3/AABLIbLmQvdoSdXDmmHPZbM3a?dl=0
