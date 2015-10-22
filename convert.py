@@ -6,10 +6,11 @@ from sets import Set
 Convert Wikipedia SQL dumps into more usable format.
 """
 
-page_dump_filename = 'enwiki-20151002-page.sql'
-pagelinks_dump_filename = 'enwiki-20151002-pagelinks.sql'
+page_dump_filename = 'data/enwiki-20151002-page.sql'
+pagelinks_dump_filename = 'data/enwiki-20151002-pagelinks.sql'
 
-converted_page_dump_filename = 'title_id_dict.txt'
+converted_page_dump_filename = 'data/title_id_dict.txt'
+converted_pagelinks_dump_filename = 'data/pagelinks_list.txt'
 
 def convert_page_dump():
 	title_id_dict = {}
@@ -26,7 +27,13 @@ def convert_page_dump():
 				page_metadata = page_row.split(",")
 				if page_metadata[1] == "0": # 0 is the article namespace
 					# Title -> ID
-					title_id_dict[page_metadata[2]] = int(page_metadata[0])
+					title = page_metadata[2]
+					i = 3
+					while title[-1] != "'":
+						title += ','
+						title += page_metadata[i]
+						i += 1
+					title_id_dict[title] = int(page_metadata[0])
 			print len(title_id_dict.keys()), 'pages'
 
 	print 'Writing to file...'
@@ -53,7 +60,7 @@ def restore_converted_page_dump():
 	
 	return title_id_dict
 
-title_id_dict = restore_converted_page_dump()
+title_id_dict = convert_page_dump()
 valid_ids = Set(title_id_dict.values())
 
 from_list = array.array('L')
@@ -74,7 +81,13 @@ with open(pagelinks_dump_filename) as f:
 				if from_id not in valid_ids:
 					continue
 				try:
-					to_id = title_id_dict[pagelink_metadata[2]]
+					title = pagelink_metadata[2]
+					i = 3
+					while title[-1] != "'":
+						title += ','
+						title += pagelink_metadata[i]
+						i += 1
+					to_id = title_id_dict[title]
 					from_list.append(from_id)
 					to_list.append(to_id)
 				except KeyError:
@@ -83,7 +96,7 @@ with open(pagelinks_dump_filename) as f:
 
 print 'Writing to file...'
 
-converted_file = open('./pagelinks_list.txt', 'w+')
+converted_file = open(converted_pagelinks_dump_filename, 'w+')
 for i in xrange(len(from_list)):
 	converted_file.write(str(from_list[i]) + ' ' + str(to_list[i]) + '\n')
 converted_file.close()
