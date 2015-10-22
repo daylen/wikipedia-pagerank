@@ -12,12 +12,13 @@ System Requirements
 - 50 GB of free space
 - PyPy
 - Java 8
+- Python3.4 with scipy, numpy, and h5py.
 
 Usage
 
 1. Download "enwiki-YYYYMMDD-page.sql.gz" and "enwiki-YYYYMMDD-pagelinks.sql.gz" from https://dumps.wikimedia.org/enwiki/
 
-2. Unzip the Wikipedia database dumps.
+2. Unzip the Wikipedia database dumps into the src folder.
 
 3. Set the path to the SQL files at the top of convert.py. Then run convert.py using PyPy. When this is done, you can delete the SQL files.
 
@@ -28,3 +29,5 @@ Usage
 6. Set the path to the relevant files at the top of sort.py. Then run sort.py using PyPy.
 
 7. View sorted_ranking.txt using less or grep.
+
+8. For topic sensitive PageRank, see src/topic/README

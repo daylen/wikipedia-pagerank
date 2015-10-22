@@ -82,15 +82,15 @@ with open('id2categories2.pickle', 'wb') as f:
 
 #### Links data
 
-# num_links = 374556579
-# def update_links_ids(id2newid):
-#   with open('../pagelinks_list.txt', 'r') as f:
-#     lst = np.empty((num_links, 2), dtype=np.int32)
-#     for i, line in enumerate(f):
-#       c = line.split(' ')
-#       lst[i,0] = id2newid[np.int(c[0])]
-#       lst[i,1] = id2newid[np.int(c[1])]
-#     dst = h5py.File('newpagelinks_list.h5', 'w')
-#     dst.create_dataset('pagelinks_list', data=lst, compression='gzip')
-#     dst.close()
-# update_links_ids(id2newid)
+num_links = 374556579
+def update_links_ids(id2newid):
+  with open('../pagelinks_list.txt', 'r') as f:
+    lst = np.empty((num_links, 2), dtype=np.int32)
+    for i, line in enumerate(f):
+      c = line.split(' ')
+      lst[i,0] = id2newid[np.int(c[0])]
+      lst[i,1] = id2newid[np.int(c[1])]
+    dst = h5py.File('newpagelinks_list.h5', 'w')
+    dst.create_dataset('pagelinks_list', data=lst, compression='gzip')
+    dst.close()
+update_links_ids(id2newid)
