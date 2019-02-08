@@ -8,10 +8,8 @@ from utils import reljoin
 Convert Wikipedia SQL dumps into more usable format.
 """
 
-#page_dump_filename = reljoin('data/enwiki-20151002-page.sql')
-page_dump_filename = reljoin('data/simplewiki-20190101-page.sql')
-#pagelinks_dump_filename = reljoin('data/enwiki-20151002-pagelinks.sql')
-pagelinks_dump_filename = reljoin('data/simplewiki-20190101-pagelinks.sql')
+page_dump_filename = reljoin('data/enwiki-20151002-page.sql')
+pagelinks_dump_filename = reljoin('data/enwiki-20151002-pagelinks.sql')
 
 converted_page_dump_filename = reljoin('data/title_id_dict.txt')
 converted_pagelinks_dump_filename = reljoin('data/pagelinks_list.txt')
