@@ -56,8 +56,8 @@ class PageRankWorker implements Runnable {
 public class PageRank {
 
 	private static final double DAMPING_FACTOR = 0.85;
-	private static final String BINARY_FILE_NAME = "/Users/daylenyang/Desktop/wikipedia-pagerank/data/rle.binary";
-	private static final String OUTPUT_FILE_NAME = "/Users/daylenyang/Desktop/wikipedia-pagerank/data/ranking.txt";
+	private static final String BINARY_FILE_NAME = Utils.reljoin("data/rle.binary");
+	private static final String OUTPUT_FILE_NAME = Utils.reljoin("data/ranking.txt");
 	private static final double ACCEPTABLE_DELTA = 1;
 	private static final int THREADS = 8;
 

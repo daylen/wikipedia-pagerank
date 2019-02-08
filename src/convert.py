@@ -2,15 +2,19 @@
 import array
 from sets import Set
 
+from utils import reljoin
+
 """
 Convert Wikipedia SQL dumps into more usable format.
 """
 
-page_dump_filename = 'data/enwiki-20151002-page.sql'
-pagelinks_dump_filename = 'data/enwiki-20151002-pagelinks.sql'
+#page_dump_filename = reljoin('data/enwiki-20151002-page.sql')
+page_dump_filename = reljoin('data/simplewiki-20190101-page.sql')
+#pagelinks_dump_filename = reljoin('data/enwiki-20151002-pagelinks.sql')
+pagelinks_dump_filename = reljoin('data/simplewiki-20190101-pagelinks.sql')
 
-converted_page_dump_filename = 'data/title_id_dict.txt'
-converted_pagelinks_dump_filename = 'data/pagelinks_list.txt'
+converted_page_dump_filename = reljoin('data/title_id_dict.txt')
+converted_pagelinks_dump_filename = reljoin('data/pagelinks_list.txt')
 
 def convert_page_dump():
 	title_id_dict = {}
@@ -38,7 +42,7 @@ def convert_page_dump():
 
 	print 'Writing to file...'
 
-	converted_file = open('./' + converted_page_dump_filename, 'w+')
+	converted_file = open(converted_page_dump_filename, 'w+')
 	for key in title_id_dict:
 		converted_file.write(key + ' ' + str(title_id_dict[key]) + '\n')
 	converted_file.close()

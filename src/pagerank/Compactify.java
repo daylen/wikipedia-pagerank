@@ -24,9 +24,9 @@ import java.util.List;
 public class Compactify {
 
 	public static final int PRINT_INTERVAL = 1000000;
-	public static final String INPUT_FILE = "/Users/daylenyang/Desktop/wikipedia-pagerank/data/pagelinks_list.txt";
-	public static final String FIRST_PASS_OUTPUT_FILE = "/Users/daylenyang/Desktop/wikipedia-pagerank/data/longs.binary";
-	public static final String SECOND_PASS_OUTPUT_FILE = "/Users/daylenyang/Desktop/wikipedia-pagerank/data/rle.binary";
+	public static final String INPUT_FILE = Utils.reljoin("data/pagelinks_list.txt");
+	public static final String FIRST_PASS_OUTPUT_FILE = Utils.reljoin("data/longs.binary");
+	public static final String SECOND_PASS_OUTPUT_FILE = Utils.reljoin("data/rle.binary");
 
 	/**
 	 * Given a list of flattened pairs, returns data that can be passed into the
