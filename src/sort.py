@@ -2,9 +2,11 @@
 Sorts and combines the final rankings
 """
 
-rankings_file = "data/ranking.txt"
-titles_file = "data/title_id_dict.txt"
-output_file = "data/sorted_ranking.txt"
+from utils import reljoin
+
+rankings_file = reljoin('data/ranking.txt')
+titles_file = reljoin('data/title_id_dict.txt')
+output_file = reljoin('data/sorted_ranking.txt')
 
 rankings = []
 titles = {}
